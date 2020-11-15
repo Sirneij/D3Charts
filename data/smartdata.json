@@ -1,0 +1,26 @@
+[
+  {
+    "label": "North Central",
+    "value": "300000"
+  },
+  {
+    "label": "North West",
+    "value": "230000"
+  },
+  {
+    "label": "North East",
+    "value": "180000"
+  },
+  {
+    "label": "South West",
+    "value": "270000"
+  },
+  {
+    "label": "South East",
+    "value": "20000"
+  },
+  {
+    "label": "South South",
+    "value": "30000"
+  }
+]

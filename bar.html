@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D3 Intro</title>
+
+    <style>
+     html{
+       font-family: sans-serif;
+     }
+     #app{
+       display: flex;
+       margin: 2rem 1rem;
+     }
+     #chart{
+       box-shadow: 0 2px 8px rgba(0, 0, 0, .26);
+       padding: 1rem;
+     }
+     #chart, #data{
+       margin: 0 2rem;
+     }
+     #data ul{
+       list-style: none;
+       margin: 0;
+       padding: 0;
+     }
+     #data li{
+       margin: .5rem;
+       padding: .5rem;
+       box-shadow: 0 2px 8px rgba(0, 0, 0, .26);
+       width: 10rem;
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       font-weight: bold;
+     }
+     .bar{
+       fill: #4f009e;
+     }
+     .label{
+       fill: #4f009e;
+     }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="chart">
+        <svg></svg>
+      </div>
+      <div id="data">
+        <ul></ul>
+      </div>
+    </div>
+    
+    <script src="static/js/d3.min.js" defer></script>
+    <script src="static/js/d3-fetch.min.js" defer></script>
+    <script src="bar.js" defer></script>
+  </body>
+</html>

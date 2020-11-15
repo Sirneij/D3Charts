@@ -1,0 +1,35 @@
+body {
+  max-width: 1200px;
+  margin: 25px auto;
+  font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+rect {
+  fill: steelblue;
+  fill-opacity: 0.8;
+}
+
+rect:hover {
+  fill-opacity: 1;
+}
+
+path {
+  fill-opacity: 0.8;
+}
+
+.selected,
+path:hover {
+  fill-opacity: 1;
+}
+
+.axis {
+  font-size: smaller;
+}
+
+main {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+h3 {
+  text-align: center;
+}
