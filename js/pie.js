@@ -6,11 +6,11 @@ const margin = {
 };
 
 const students = [
-  { grade: "A+", student: 8 },
-  { grade: "A", student: 21 },
-  { grade: "B", student: 29 },
-  { grade: "C", student: 15 },
-  { grade: "D", student: 18 },
+  { grade: "A", student: 8 },
+  { grade: "B", student: 21 },
+  { grade: "C", student: 29 },
+  { grade: "D", student: 15 },
+  { grade: "E", student: 18 },
   { grade: "F", student: 3 },
 ];
 
