@@ -16,8 +16,6 @@ const students = [
 
 const width = 900 - margin.left - margin.right;
 const height = 380 - margin.top - margin.bottom;
-const xScale = d3.scaleBand().padding(0.2).range([0, width]);
-const yScale = d3.scaleLinear().range([height, 0]);
 const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 const svg = d3
   .select("#myChart")
@@ -30,7 +28,7 @@ const data = d3
   .pie()
   .sort(null)
   .value((d) => d.student)(students);
-console.log(data.map((d) => d.data));
+// console.log(data.map((d) => d.data));
 colorScale.domain(data.map((d) => d.data));
 const segments = d3
   .arc()
