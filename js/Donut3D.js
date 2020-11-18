@@ -219,6 +219,7 @@
       .enter()
       .append("path")
       .attr("class", "innerSlice")
+      .attr("id", (d) => "tag-" + d.data.grade)
       .style("fill", (d) => d3.hsl(colors(d.data.grade)).darker(0.7))
       .attr("d", function (d) {
         return pieInner(d, rx + 0.5, ry + 0.5, h, ir);
@@ -233,6 +234,7 @@
       .enter()
       .append("path")
       .attr("class", "topSlice")
+      .attr("id", (d) => "tag-" + d.data.grade)
       .style("fill", (d) => colors(d.data.grade))
       .style("stroke", (d) => colors(d.data.grade))
       .attr("d", function (d) {
@@ -248,6 +250,7 @@
       .enter()
       .append("path")
       .attr("class", "outerSlice")
+      .attr("id", (d) => "tag-" + d.data.grade)
       .style("fill", (d) => d3.hsl(colors(d.data.grade)).darker(0.7))
       .attr("d", function (d) {
         return pieOuter(d, rx - 0.5, ry - 0.5, h);
@@ -262,6 +265,7 @@
       .enter()
       .append("text")
       .attr("class", "percent")
+      .attr("id", (d) => "tag-" + d.data.grade)
       .attr("x", function (d) {
         return 0.6 * rx * Math.cos(0.5 * (d.startAngle + d.endAngle));
       })
@@ -273,6 +277,59 @@
       .each(function (d) {
         this._current = d;
       });
+    const containerId = d3.select("g").attr("id", id).node().parentNode;
+    console.log(containerId);
+    const chartContainerWidth = containerId.clientWidth;
+    const chartContainerHeight = containerId.clientHeight;
+    console.log(chartContainerHeight);
+    const legendSpace = chartContainerWidth / (2 * data.length); //Ensures the automatic placement of legends
+    const legend = d3
+      .select("#myChart > svg")
+      .selectAll(".legend")
+      .data(_data)
+      .enter()
+      .append("g")
+      .attr("class", "legend")
+      .attr("id", (d) => "legend-" + d.data.grade)
+      .attr(
+        "transform",
+        `translate(${chartContainerHeight / 3}, ${chartContainerHeight / 6})`
+      )
+      .on("click", (e, d) => {
+        // Determine if current line is visible
+        const active = d.active ? false : true,
+          newOpacity = active ? 0 : 1,
+          lengendOpacity = active ? 0.4 : 1;
+        // Hide or show the elements based on the ID
+        d3.selectAll("#tag-" + d.data.grade)
+          .transition()
+          .duration(100)
+          // .attr("transform", `translate(${x},${y})`);
+          .style("opacity", newOpacity);
+        // Update whether or not the elements are active
+        d3.select("#legend-" + d.data.grade)
+          .transition()
+          .duration(100)
+          .style("opacity", lengendOpacity);
+        d.active = active;
+      });
+
+    legend
+      .append("circle")
+      .attr("cx", (d, i) => legendSpace / 2 + i * legendSpace - 15)
+      .attr("cy", chartContainerHeight / 2 + margin.bottom / 2 + 15)
+      .attr("r", 4)
+      .attr("width", 10)
+      .attr("height", 10)
+      .style("fill", (d) => colors(d.data.grade));
+
+    legend
+      .append("text")
+      .attr("x", (d, i) => legendSpace / 2 + i * legendSpace)
+      .attr("y", chartContainerHeight / 2 + margin.bottom / 2 + 20)
+      .text((d) => d.data.grade)
+      .style("fill", (d) => colors(d.data.grade))
+      .style("text-anchor", "middle");
   };
 
   this.Donut3D = Donut3D;

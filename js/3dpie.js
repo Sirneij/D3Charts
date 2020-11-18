@@ -17,14 +17,6 @@ const students = [
 const width = 900 - margin.left - margin.right;
 const height = 380 - margin.top - margin.bottom;
 
-var salesData = [
-  { label: "Basic", color: "#3366CC" },
-  { label: "Plus", color: "#DC3912" },
-  { label: "Lite", color: "#FF9900" },
-  { label: "Elite", color: "#109618" },
-  { label: "Delux", color: "#990099" },
-];
-
 const svg = d3
   .select("#myChart")
   .append("svg")
@@ -35,12 +27,6 @@ const svg = d3
 svg.append("g").attr("id", "quotesDonut");
 
 Donut3D.draw("quotesDonut", students, 450, 150, 130, 100, 30, 0);
-
-function randomData() {
-  return salesData.map(function (d) {
-    return { label: d.label, value: 1000 * Math.random(), color: d.color };
-  });
-}
 
 function responsivefy(svg) {
   // Container is the DOM element, svg is appended.
