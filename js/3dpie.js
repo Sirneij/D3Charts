@@ -25,8 +25,8 @@ const svg = d3
   .call(responsivefy); // Call responsivefy to make the chart responsive
 
 svg.append("g").attr("id", "quotesDonut");
-
-Donut3D.draw("quotesDonut", students, 450, 150, 130, 100, 30, 0);
+// 150, 150, 130, 100, 30, 0.4;
+Donut3D.draw("quotesDonut", students, width / 2, height / 2, 130, 100, 30, 0.2);
 
 function responsivefy(svg) {
   // Container is the DOM element, svg is appended.
