@@ -47,7 +47,23 @@ const sections = svg
   .append("path")
   .attr("d", segments)
   .attr("id", (d) => `tag-${d.data.grade}`)
-  .attr("fill", (d) => colorScale(d.data.grade));
+  .attr("fill", (d) => colorScale(d.data.grade))
+  .on("mouseover", (e, d) => {
+    // Determine if current line is visible
+    const active = d.active ? false : true,
+      newOpacity = active ? 0.4 : 1;
+    // Hide or show the elements based on the ID
+    d3.select("#tag-" + d.data.grade)
+      .transition()
+      .duration(100)
+      .style("opacity", newOpacity);
+    d.active = active;
+  })
+  .on("mouseout", (e, d) => {
+    d3.select("#tag-" + d.data.grade)
+      .transition()
+      .style("opacity", 1);
+  });
 
 const content = d3
   .select("g")
