@@ -278,10 +278,10 @@
         this._current = d;
       });
     const containerId = d3.select("g").attr("id", id).node().parentNode;
-    console.log(containerId);
+    // console.log(containerId);
     const chartContainerWidth = containerId.clientWidth;
     const chartContainerHeight = containerId.clientHeight;
-    console.log(chartContainerHeight);
+    // console.log(chartContainerHeight);
     const legendSpace = chartContainerWidth / (2 * data.length); //Ensures the automatic placement of legends
     const legend = d3
       .select("#myChart > svg")

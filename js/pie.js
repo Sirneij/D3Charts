@@ -17,12 +17,21 @@ const students = [
 const width = 900 - margin.left - margin.right;
 const height = 380 - margin.top - margin.bottom;
 const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+const radius = Math.min(width, height) / 2 - margin.top;
 const svg = d3
   .select("#myChart")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
   .call(responsivefy); // Call responsivefy to make the chart responsive
+// Compute the position of each group on the pie:
+// var pie = d3
+//   .pie()
+//   .sort(null) // Do not sort group by size
+//   .value(function (d) {
+//     return d.student;
+//   });
+// var data = pie(students.entries());
 
 const data = d3
   .pie()
@@ -30,49 +39,112 @@ const data = d3
   .value((d) => d.student)(students);
 // console.log(data.map((d) => d.data));
 colorScale.domain(data.map((d) => d.data));
-const segments = d3
+const arc = d3
   .arc()
   .innerRadius(0)
-  .outerRadius(width / 6)
-  .padAngle(0.05)
-  .padRadius(50);
-const sections = svg
+  .outerRadius(radius * 0.9);
+// .padAngle(0.05)
+// .padRadius(50);
+
+// Another arc that won't be drawn. Just for labels positioning
+var outerArc = d3
+  .arc()
+  .innerRadius(radius * 0.96)
+  .outerRadius(radius * 0.98);
+
+// svg
+//   .append("g")
+//   .attr("transform", `translate(${width / 2}, ${height / 2})`)
+//   .selectAll("path")
+//   .data(data)
+//   .enter()
+//   .append("path")
+//   .attr("d", arc)
+//   .attr("id", (d) => `tag-${d.data.grade}`)
+//   .attr("fill", (d) => colorScale(d.data.grade))
+//   .on("mouseover", (e, d) => {
+//     // Determine if current line is visible
+//     const active = d.active ? false : true,
+//       newOpacity = active ? 0.4 : 1;
+//     // Hide or show the elements based on the ID
+//     d3.select("#tag-" + d.data.grade)
+//       .transition()
+//       .duration(100)
+//       .style("opacity", newOpacity);
+//     d.active = active;
+//   })
+//   .on("mouseout", (e, d) => {
+//     d3.select("#tag-" + d.data.grade)
+//       .transition()
+//       .style("opacity", 1);
+//   });
+// Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+svg
   .append("g")
   .attr("transform", `translate(${width / 2}, ${height / 2})`)
-  .selectAll("path")
+  .selectAll("allSlices")
   .data(data)
   .enter()
   .append("path")
-  .attr("d", segments)
+  .attr("d", arc)
   .attr("id", (d) => `tag-${d.data.grade}`)
-  .attr("fill", (d) => colorScale(d.data.grade))
-  .on("mouseover", (e, d) => {
-    // Determine if current line is visible
-    const active = d.active ? false : true,
-      newOpacity = active ? 0.4 : 1;
-    // Hide or show the elements based on the ID
-    d3.select("#tag-" + d.data.grade)
-      .transition()
-      .duration(100)
-      .style("opacity", newOpacity);
-    d.active = active;
+  .attr("fill", function (d) {
+    return colorScale(d.data.grade);
   })
-  .on("mouseout", (e, d) => {
-    d3.select("#tag-" + d.data.grade)
-      .transition()
-      .style("opacity", 1);
+  .attr("stroke", "white")
+  .style("stroke-width", "2px")
+  .style("opacity", 0.7);
+// const content = d3
+//   .select("g")
+//   .selectAll("text")
+//   .data(data)
+//   .enter()
+//   .append("text")
+//   .text((d) => d.data.student)
+//   .attr("transform", (d) => "translate(" + arc.centroid(d) + ")")
+//   .style("text-anchor", "middle");
+
+// Add the polylines between chart and labels:
+svg
+  .append("g")
+  .attr("transform", `translate(${width / 2}, ${height / 2})`)
+  .selectAll("allPolylines")
+  .data(data)
+  .enter()
+  .append("polyline")
+  .attr("stroke", (d) => colorScale(d.data.grade))
+  .style("fill", "none")
+  .attr("stroke-width", 1)
+  .attr("points", function (d) {
+    var posA = arc.centroid(d); // line insertion in the slice
+    var posB = outerArc.centroid(d); // line break: we use the other arc generator that has been built only for that
+    var posC = outerArc.centroid(d); // Label position = almost the same as posB
+    var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2; // we need the angle to see if the X position will be at the extreme right or extreme left
+    posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+    return [posA, posB, posC];
   });
 
-const content = d3
-  .select("g")
-  .selectAll("text")
+// Add the polylines between chart and labels:
+svg
+  .append("g")
+  .attr("transform", `translate(${width / 2}, ${height / 2})`)
+  .selectAll("allLabels")
   .data(data)
   .enter()
   .append("text")
-  .text((d) => d.data.student)
-  .attr("transform", (d) => "translate(" + segments.centroid(d) + ")")
-  .style("text-anchor", "middle");
-console.log(data.length);
+  .text((d) => `${d.data.grade}(${d.data.student})`)
+  .attr("transform", function (d) {
+    var pos = outerArc.centroid(d);
+    var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+    pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+    return "translate(" + pos + ")";
+  })
+  .style("text-anchor", function (d) {
+    var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+    return midangle < Math.PI ? "start" : "end";
+  })
+  .style("fill", (d) => colorScale(d.data.grade));
+
 const legendSpace = width / data.length; //Ensures the automatic placement of legends
 const legend = svg
   .selectAll(".legend")

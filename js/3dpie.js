@@ -26,6 +26,19 @@ const svg = d3
 
 svg.append("g").attr("id", "quotesDonut");
 // 150, 150, 130, 100, 30, 0.4;
+d3.csv("data/testing.csv").then((data) => {
+  const slices = data.columns.slice(1).map((id) => {
+    return {
+      id: id,
+      values: data.map((d) => {
+        return {
+          sum: d[id],
+        };
+      }),
+    };
+  });
+  let res = {};
+});
 Donut3D.draw("quotesDonut", students, width / 2, height / 2, 130, 100, 30, 0.2);
 
 function responsivefy(svg) {
